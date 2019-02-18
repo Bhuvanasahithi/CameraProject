@@ -2,7 +2,9 @@ package com.example.sahithi.cameraproject
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     var previewBuilder: CaptureRequest.Builder? = null
     var previewSession: CameraCaptureSession? = null
     var jPEGSIzes: Array<Size>? = null
+    var change_mode: Button? = null
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +69,10 @@ class MainActivity : AppCompatActivity() {
             //initializing the views
             textureView = findViewById(R.id.texture_view) as TextureView
             captureImage = findViewById(R.id.btn_save_picture) as Button
+          //  change_mode=findViewById(R.id.btn_shift_mode) as Button
             //setting the surface texture listener for texture view
             textureView!!.setSurfaceTextureListener(surfaceTextureListener)
+
             //button capture image action
             captureImage!!.setOnClickListener()
             { v: View ->
@@ -296,6 +301,34 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode==1)
+        {
+            if(resultCode== Activity.RESULT_OK)
+            {
+                ORIENTATIONS.append(Surface.ROTATION_0, 90)
+                ORIENTATIONS.append(Surface.ROTATION_90, 0)
+                ORIENTATIONS.append(Surface.ROTATION_180, 270)
+                ORIENTATIONS.append(Surface.ROTATION_270, 180)
+                //initializing the views
+                textureView = findViewById(R.id.texture_view) as TextureView
+                captureImage = findViewById(R.id.btn_save_picture) as Button
+                //setting the surface texture listener for texture view
+                textureView!!.setSurfaceTextureListener(surfaceTextureListener)
+                //button capture image action
+                captureImage!!.setOnClickListener()
+                { v: View ->
+                    getImage()
+                    Toast.makeText(this@MainActivity,"Image saved successfully",Toast.LENGTH_LONG).show()
+                }
+            }
+            else
+            {
+                Log.d("sagdas",data!!.data.toString()+" "+resultCode.toString())
+            }
+        }
+    }
 
 }
 
